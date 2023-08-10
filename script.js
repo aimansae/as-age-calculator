@@ -3,6 +3,13 @@
 let dayInput = document.getElementById("day");
 dayInput.addEventListener("input", validatedate);
 
+// getting month value
+let monthInput = document.querySelector("#month");
+monthInput.addEventListener("input", validateMonth);
+
+let displayMonthError = document.querySelector("#monthError");
+let monthErrorMessage = "Please provide a number between 1 and 12";
+
 // display the error
 
 let displayDayError = document.querySelector("#dayError");
@@ -11,6 +18,8 @@ let dayErrorMessage =
 
 function validatedate() {
   let dayValue = parseInt(dayInput.value.replace(/\D/g, ""));
+
+  
   console.log("Inserted date", dayValue);
 
   //block user from typing more that 2 nums
@@ -21,37 +30,44 @@ function validatedate() {
   // validating date
   if (dayValue > 31 || dayValue <= 0) {
     displayDayError.textContent = dayErrorMessage;
-  } else {
+    } else {
+     
     setTimeout(() => {
       displayDayError.textContent = ""; // clear  error after 3sec
     }, 3000);
   }
 }
 
+
 //validating the month field
 
-let monthInput = document.querySelector("#month");
-monthInput.addEventListener("input", validateMonth);
-
-let displayMonthError = document.querySelector("#monthError");
-let monthErrorMessage = "Please provide a number between 1 and 12";
 
 function validateMonth() {
+  let dayValue = parseInt(dayInput.value.replace(/\D/g, ""));
+
   let validatedmonth = parseInt(monthInput.value.replace(/\D/g, ""));
-  console.log("Inserted month:", validatedmonth);
+  let monthValue = parseInt(monthInput.value.replace(/\D/g, "")); // Added to get the month value
+
+  console.log("Inserted month:", monthValue);
   if (monthInput.value.length > 2) {
     monthInput.value = monthInput.value.slice(0, 2);
   }
 
   // getInput = monthInput.value
   // console.log('user inserted = ', getInput)
-  if (validatedmonth > 12 || validatedmonth <= 0) {
+  if (monthValue > 12 || monthValue <= 0) {
     displayMonthError.textContent = monthErrorMessage;
     setTimeout(() => {
       displayMonthError.textContent = "";
       monthInput.value = "";
     }, 2000);
-  } else {
+  } if (
+    (monthValue === 2 && dayValue > 28) ||
+    ((monthValue === 4 || monthValue === 6 || monthValue === 9 || monthValue === 11) && dayValue > 30)
+  ) {
+    displayDayError.textContent = dayErrorMessage;
+  
+  }  else {
     setTimeout(() => {
       displayMonthError.textContent = "";
     }, 2000);
@@ -108,8 +124,6 @@ form.addEventListener("submit", (e) => {
   const ageInDays = ageDate.getUTCDate() - 1;
 
   // validating based on months
-
-  
 
   let years = document.querySelector('#calculatedYears')
   let months = document.querySelector('#calculatedMonths')
