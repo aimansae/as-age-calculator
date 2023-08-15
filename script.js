@@ -1,4 +1,4 @@
-// validating the day field
+// getting the day field
 
 let dayInput = document.getElementById("day");
 dayInput.addEventListener("input", validatedate);
@@ -7,20 +7,22 @@ dayInput.addEventListener("input", validatedate);
 let monthInput = document.querySelector("#month");
 monthInput.addEventListener("input", validateMonth);
 
-let displayMonthError = document.querySelector("#monthError");
-let monthErrorMessage = "Please provide a number between 1 and 12";
 
-// display the error
-
-let displayDayError = document.querySelector("#dayError");
-let dayErrorMessage =
+// error messages 
+let dateErrorMessage =
   "Invalid format. Please insert valid date between 1 and 31";
+let monthErrorMessage = "Please provide a number between 1 and 12";
+let wrongCombinationError = "Please insert a valid date";
+
+let getDateError = document.querySelector("#dayError");
+let getMonthError = document.querySelector("#monthError");
+
+let hasErrors = false;
+
+
 
 function validatedate() {
   let dayValue = parseInt(dayInput.value.replace(/\D/g, ""));
-
-  
-  console.log("Inserted date", dayValue);
 
   //block user from typing more that 2 nums
 
@@ -29,47 +31,53 @@ function validatedate() {
   }
   // validating date
   if (dayValue > 31 || dayValue <= 0) {
-    displayDayError.textContent = dayErrorMessage;
-    } else {
-     
-    setTimeout(() => {
-      displayDayError.textContent = ""; // clear  error after 3sec
+    getDateError.textContent = dateErrorMessage;
+    hasErrors = true; // Set the flag to indicate an error
+    setTimeout(function () {
+      dayInput.value = "";
+      getDateError.textContent = ""; // Clear the error message after 3 seconds
     }, 3000);
+  }else{
+    hasErrors = false;
   }
 }
 
-
 //validating the month field
-
 
 function validateMonth() {
   let dayValue = parseInt(dayInput.value.replace(/\D/g, ""));
-
-  let validatedmonth = parseInt(monthInput.value.replace(/\D/g, ""));
   let monthValue = parseInt(monthInput.value.replace(/\D/g, "")); // Added to get the month value
 
-  console.log("Inserted month:", monthValue);
   if (monthInput.value.length > 2) {
     monthInput.value = monthInput.value.slice(0, 2);
   }
 
-  // getInput = monthInput.value
-  // console.log('user inserted = ', getInput)
   if (monthValue > 12 || monthValue <= 0) {
-    displayMonthError.textContent = monthErrorMessage;
+    getMonthError.textContent = monthErrorMessage;
+    hasErrors = true; // Set the flag to indicate an error
     setTimeout(() => {
-      displayMonthError.textContent = "";
+      getMonthError.textContent = "";
       monthInput.value = "";
     }, 2000);
-  } if (
+  }
+  if (
     (monthValue === 2 && dayValue > 28) ||
-    ((monthValue === 4 || monthValue === 6 || monthValue === 9 || monthValue === 11) && dayValue > 30)
+    ((monthValue === 4 ||
+      monthValue === 6 ||
+      monthValue === 9 ||
+      monthValue === 11) &&
+      dayValue > 30)
   ) {
-    displayDayError.textContent = dayErrorMessage;
-  
-  }  else {
+    getDateError.textContent = wrongCombinationError;
+    hasErrors = true; // Set the flag to indicate an error
     setTimeout(() => {
-      displayMonthError.textContent = "";
+      getDateError.textContent = "";
+      monthInput.value = "";
+    }, 2000);
+  } else {
+    setTimeout(() => {
+      hasErrors = false;
+      getMonthError.textContent = "";
     }, 2000);
   }
 }
@@ -81,58 +89,94 @@ yearInput.addEventListener("input", validateYear);
 
 // getting the current year
 let getCurrentDate = new Date();
-let currentDate = getCurrentDate.getDate();
-// let currentMonth = getCurrentDate.getMonth() +1;
+
+
 let currentYear = getCurrentDate.getFullYear();
 
-
 // to display error message for year
-let yearError = document.getElementById("yearError");
-let yearErrorMessage = `Date must be between 1900 and ${currentYear}`;
+let displayYearError = document.getElementById("yearError");
+let yearErrorMessage = `Year must be between 1900 and ${currentYear}`;
+
 
 function validateYear() {
-  let validateYear = parseInt(this.value.replace(/\D/g, ""));
+
+  let insertedYear = parseInt(this.value.replace(/\D/g, ""));
+  console.log(insertedYear);
+
   if (this.value.length > 4) {
     this.value = this.value.slice(0, 4);
   }
-  if (validateYear < 1900 || validateYear >= currentYear) {
-    yearError.textContent = yearErrorMessage;
-  } else {
-    yearError.textContent = "";
-  }
-}
 
-// attach event listener to submit button
+  if 
+    (this.value.length ===4 && insertedYear <= 1900 ||
+    insertedYear >= currentYear){
+  
+    displayYearError.textContent = yearErrorMessage;
+    hasErrors = true; // Set the flag to indicate an error
+
+    setTimeout(() => {
+      displayYearError.textContent = ""; // Clear the error message after 3 seconds
+      yearInput.value = ""; // Clear the input field
+    }, 2000);
+  } else {
+    displayYearError.textContent = "";
+    hasErrors = false;
+
+  }
+
+}
+// attachin event listener to submit button
 
 let form = document.getElementById("myForm");
 
 form.addEventListener("submit", (e) => {
   e.preventDefault();
-  let insertedDate = dayInput.value;
-  let insertedMonth = monthInput.value;
-  let insertedYear = yearInput.value;
+  if(hasErrors){
+    console.log('please check errors')
+    return  //Prevent form submission
+  }
+  setTimeout(() => {
+    
+  }, 4000);
+  let userDate = dayInput.value;
+  let userMonth = monthInput.value;
+  let userYear = yearInput.value;
+
+  // creating birthday beased on user input
+  const birthDate = new Date(userYear, userMonth - 1, userDate);
+  console.log("user  birthday created", birthDate);
   const currentDate = new Date();
-  
-  
-  const birthDate = new Date(insertedYear, insertedMonth - 1, insertedDate);
-  console.log('Display birthday', birthDate)
 
-  const ageInMilliseconds = currentDate - birthDate;
-  const ageDate = new Date(ageInMilliseconds);
-  const ageInYears = currentDate.getFullYear() -ageDate.getUTCFullYear() -1;
-  const ageInMonths = ageDate.getUTCMonth();
-  const ageInDays = ageDate.getUTCDate() - 1;
+  let years = currentDate.getFullYear() - birthDate.getFullYear();
+  const birthMonth = birthDate.getMonth();
+  const currentMonth = currentDate.getMonth();
 
-  // validating based on months
+  let months = currentMonth - birthMonth;
+  if (
+    months < 0 ||
+    (months === 0 && currentDate.getDate() < birthDate.getDate())
+  ) {
+    years--;
+    months += 12;
+  }
 
-  let years = document.querySelector('#calculatedYears')
-  let months = document.querySelector('#calculatedMonths')
-  let days = document.querySelector('#calculatedDays')
-  years.textContent = ageInYears
-  months.textContent = ageInMonths
-  days.textContent = ageInDays
+  const daysInMonth = [31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];
 
-  
-  
-  
+  let days = currentDate.getDate() - birthDate.getDate();
+  if (days < 0) {
+    months--;
+    const lastMonthDays = daysInMonth[(currentMonth + 11) % 12]; // Get the number of days in the last month
+    days = lastMonthDays + days;
+  }
+
+  console.log(
+    `You are ${years} years, ${months} months, and ${days} days old.`
+  );
+
+  let showYears = document.querySelector("#calculatedYears");
+  let showMonths = document.querySelector("#calculatedMonths");
+  let showDays = document.querySelector("#calculatedDays");
+  showYears.textContent = years;
+  showMonths.textContent = months;
+  showDays.textContent = days;
 });
