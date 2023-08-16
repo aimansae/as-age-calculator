@@ -1,3 +1,5 @@
+/*Google fonts*/
+@import url('https://fonts.googleapis.com/css2?family=Poppins:ital,wght@0,200;0,700;1,400;1,800&display=swap');/*to remove default arrows from input type=number*/
 /* Chrome, Safari, Edge, Opera */
 input::-webkit-outer-spin-button,
 input::-webkit-inner-spin-button {
@@ -5,7 +7,94 @@ input::-webkit-inner-spin-button {
   margin: 0;
 }
 
+*{
+  margin: 0;
+  padding: 0;
+}
+
+.card{
+  margin: 2rem;
+  background-color: #fff;
+  padding: 1rem;
+  border-radius:15px 15px 60px 15px;
+}
+
+
+body{
+  font-family: 'Poppins', sans-serif;
+  background-color: hsl(0, 0%, 94%);
+}
+
 #dayError, #yearError, #monthError{
-    color: red;
+    color: hsl(0, 100%, 67%);
     font-weight: bold;
+}
+/* .main-container{
+  display: flex;
+}
+.flex-container{
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 15px;
+  justify-content: start;
+  margin-right:2rem ;
+
+}
+
+.input-container{
+  display: flex;
+  align-items: stretcenterch;
+
+} */
+
+.main-container{
+  display: flex;
+  margin-bottom: 1rem;
+}
+
+label {
+  font-size: 12px;
+  text-transform: uppercase;
+  color:hsl(0, 1%, 44%);
+  font-weight: 600;
+  margin-bottom:.5rem;
+
+}
+
+.input-container input{
+ 
+  width: 100%; /* Make the input field fill the available width of its parent container */
+  height: 2.5rem;
+  border-color: hsl(0, 0%, 86%);
+  border: 1px solid hsl(0, 0%, 86%)
+
+}
+
+.flex-container{
+  margin-right: 1rem;
+}
+
+::placeholder{
+  text-transform: uppercase;
+  color:hsl(0, 1%, 44%);
+  padding-left:.5rem ;
+
+}
+
+.button-container{
+  display: flex;
+  align-items: center;
+}
+hr{
+  width: 80%;
+}
+.arrow-image{
+  background-color: hsl(259, 100%, 65%);
+  border-radius: 25px;
+}
+
+#submitButton{
+  border: none;
+  background: none;
+
 }
